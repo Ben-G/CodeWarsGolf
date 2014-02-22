@@ -11,7 +11,10 @@ window.addEventListener('load',function(e) {
   // Sprites and Scene module (for the stage support) loaded.
   var Q = window.Q = Quintus().include("Sprites, Scenes, Input, Touch");
 
-  Q.setup({ width: 320 , height: 480})
+  var spawnX = 50;
+  var spawnY = 50;
+
+  Q.setup({ width: Q.width , height: Q.height})
    .touch(Q.SPRITE_ALL);
   // Sprite class for the randomly shapes
   //
@@ -43,7 +46,8 @@ window.addEventListener('load',function(e) {
      init: function(p) {
        // Create a random shape (defined below)
        p =this.createShape(p);
-
+       p.x = spawnX;
+       p.y = spawnY;
        // Initialize the p hash
        this._super(p);
 
@@ -52,22 +56,31 @@ window.addEventListener('load',function(e) {
        this.on("drag");
        this.on("touchEnd");
        this.on("touch");
+
+       this.timeTouchBegin = 0;
      },
 
      touch: function(touch) {
-      console.log("touch!");
-      this.p = this.createShape(this.p);      
+      console.log("touch!");  
+      // store the current timestamp 
+      this.timeTouchBegin = new Date().getTime();
      },
 
      drag: function(touch) {
        this.p.dragging = true;
        this.p.x = touch.origX + touch.dx;
        this.p.y = touch.origY + touch.dy;
+       this.timeTouchBegin = 0;
      },
 
      touchEnd: function(touch) {
        this.p.dragging = false;
-
+       currentTime = new Date().getTime();
+       // calculate the time difference
+       timeDiff = currentTime - this.timeTouchBegin;
+       if (timeDiff < 200) {
+        this.p = this.createShape(this.p);  
+       }
      },
 
      createShape: function(p) {
@@ -114,9 +127,6 @@ window.addEventListener('load',function(e) {
           p.points[i][1] -= minY + p.h/2;
         }
 
-
-        p.x = Math.random()*Q.width;
-        p.y = Math.random()*Q.height;
         p.cx = p.w/2;
         p.cy = p.h/2;
         p.angle = angle;
