@@ -111,7 +111,28 @@ window.addEventListener('load',function(e) {
      p.angle = 1; // it breaks at 0?? why??
      p.type = 1;
      return p;
+    },
+    
+    	step: function(dt) {
+      this.p.x += this.p.vx * dt;
+      this.p.y += this.p.vy * dt;
+
+      //this.stage.collide(this);
+	  
+      
+        if(this.p.x < 24) { this.p.vx = Math.abs(this.p.vx); }
+        if(this.p.x > Q.width - 24) { this.p.vx = -Math.abs(this.p.vx); }
+
+        if(this.p.y < 24) { this.p.vy = Math.abs(this.p.vy); }
+		if(this.p.y > Q.height - 24) { this.p.vy = -Math.abs(this.p.vy); }
+      
+
+      //if(this.p.y > Q.height) {
+       // this.destroy(); // Remove the ball if it's off the screen
+      //}
+	  
     }
+    
   });
 
   Q.Sprite.extend("RandomShape", {
