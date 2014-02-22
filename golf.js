@@ -54,21 +54,28 @@ window.addEventListener('load',function(e) {
     },
 
     collide: function(col) {
-      s = 100
+      s = this.speed - (0.2 * 100);
+
+      if (s < 0) {
+        s = 0.1;
+      }
 
       // Get vector magnitude
       m = Math.sqrt(col.normalX * col.normalX + col.normalY * col.normalY)
 
       // Divide by magnitude and multiply by desired speed
-      x = col.normalX / m * s
-      y = col.normalY / m * s
+      x = (col.normalX / m) * s;
+      y = (col.normalY / m) * s;
 
       this.p.vx = x;
       this.p.vy = y;
+
+      this.speed = Math.sqrt(this.p.vx * this.p.vx + this.p.vy * this.p.vy);
     },
 
     touch: function(touch) {
       this.p.vy = -100;
+      this.speed = 100;
     },
 
     createCircle: function(p)
