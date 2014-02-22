@@ -48,6 +48,7 @@ window.addEventListener('load',function(e) {
        p =this.createShape(p);
        p.x = spawnX;
        p.y = spawnY;
+       p.color = "yellow";
        // Initialize the p hash
        this._super(p);
 
@@ -186,8 +187,8 @@ window.addEventListener('load',function(e) {
   // Turning Q.debug and Q.debugFill on will render
   // the sprites' collision meshes, which is all we want
   // in this situation, otherwise nothing would get rendered
-  Q.debug = true;
-  Q.debugFill = true;
+  // Q.debug = true;
+  // Q.debugFill = true;
 
   var currentObj = null;
   // Touch events do most of the work for us, but the
