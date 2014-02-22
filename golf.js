@@ -16,14 +16,14 @@ window.addEventListener('load',function(e) {
   // Sprite class for the randomly shapes
   //
   //
-  Q.Sprite.extend("GameLayer", {
+  Q.Sprite.extend("SpawnButton", {
     init: function(p) {
        // Create a random shape (defined below)
        p = p || {};
        p.type = -1;
        p.collisionMask = Q.SPRITE_NONE;
-       p.w = 960;
-       p.h = 640;
+       p.w = 64;
+       p.h = 64;
        p.color = "red";
        p.z = -1;
 
@@ -34,6 +34,7 @@ window.addEventListener('load',function(e) {
     
     touch: function(touch) {
       console.log("touch Layer!");
+      currentStage.insert(new Q.RandomShape());
     }
 
   });
@@ -132,23 +133,22 @@ window.addEventListener('load',function(e) {
          this.p.scale = 1.;
        }
 
-      // var maxCol = 3, collided = false, p = this.p;
-      // p.hit = false;
-      // while((collided = this.stage.search(this)) && maxCol > 0) {
-      //   if(collided) {
-      //     // If we're dragging, move other objects
-      //     // otherwise, move us
-      //     if(this.p.dragging) { 
-      //       collided.obj.p.x += collided.separate[0];
-      //       collided.obj.p.y += collided.separate[1];
-      //     } else {
-      //       this.p.x -= collided.separate[0];
-      //       this.p.y -= collided.separate[1];
-      //     }
-      //   }
-      //   maxCol--;
-      // }
-
+      var maxCol = 3, collided = false, p = this.p;
+      p.hit = false;
+      while((collided = this.stage.search(this)) && maxCol > 0) {
+        if(collided) {
+          // If we're dragging, move other objects
+          // otherwise, move us
+          if(this.p.dragging) { 
+            collided.obj.p.x += collided.separate[0];
+            collided.obj.p.y += collided.separate[1];
+          } else {
+            this.p.x -= collided.separate[0];
+            this.p.y -= collided.separate[1];
+          }
+        }
+        maxCol--;
+      }
 
      }
 
@@ -160,16 +160,16 @@ window.addEventListener('load',function(e) {
 
   // Scene that actually adds shapes onto the stage
   Q.scene("start",new Q.Scene(function(stage) {
-    var gameLayer = stage.insert(new Q.GameLayer());
+    var gameLayer = stage.insert(new Q.SpawnButton());
 
     var shapesLeft = numShapes;
     while(shapesLeft-- > 0) {
-      stage.insert(new Q.RandomShape(), gameLayer);
+      stage.insert(new Q.RandomShape());
     }
   }));
 
   // Finally call `stageScene` to start the show
-  Q.stageScene("start");
+  var currentStage = Q.stageScene("start");
 
   // Render the elements
   // Turning Q.debug and Q.debugFill on will render
