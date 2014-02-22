@@ -145,22 +145,22 @@ window.addEventListener('load',function(e) {
          this.p.scale = 1.;
        }
 
-      var maxCol = 3, collided = false, p = this.p;
-      p.hit = false;
-      while((collided = this.stage.search(this)) && maxCol > 0) {
-        if(collided) {
-          // If we're dragging, move other objects
-          // otherwise, move us
-          if(this.p.dragging) { 
-            collided.obj.p.x += collided.separate[0];
-            collided.obj.p.y += collided.separate[1];
-          } else {
-            this.p.x -= collided.separate[0];
-            this.p.y -= collided.separate[1];
-          }
-        }
-        maxCol--;
-      }
+      // var maxCol = 3, collided = false, p = this.p;
+      // p.hit = false;
+      // while((collided = this.stage.search(this)) && maxCol > 0) {
+      //   if(collided) {
+      //     // If we're dragging, move other objects
+      //     // otherwise, move us
+      //     if(this.p.dragging) { 
+      //       collided.obj.p.x += collided.separate[0];
+      //       collided.obj.p.y += collided.separate[1];
+      //     } else {
+      //       this.p.x -= collided.separate[0];
+      //       this.p.y -= collided.separate[1];
+      //     }
+      //   }
+      //   maxCol--;
+      // }
 
      }
 
