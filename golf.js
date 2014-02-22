@@ -36,7 +36,6 @@ window.addEventListener('load',function(e) {
     },
     
     touch: function(touch) {
-      console.log("touch Layer!");
       currentStage.insert(new Q.RandomShape());
     }
 
@@ -48,13 +47,28 @@ window.addEventListener('load',function(e) {
       p.color = "blue";
       this._super(p);
       this.add("2d");
+      this.add("aiBounce");
       this.p.gravity = 0.0;
       this.on("touch");
+      this.on("hit",this,"collide");
+    },
+
+    collide: function(col) {
+      s = 100
+
+      // Get vector magnitude
+      m = Math.sqrt(col.normalX * col.normalX + col.normalY * col.normalY)
+
+      // Divide by magnitude and multiply by desired speed
+      x = col.normalX / m * s
+      y = col.normalY / m * s
+
+      this.p.vx = x;
+      this.p.vy = y;
     },
 
     touch: function(touch) {
       this.p.vy = -100;
-      console.log("golfball touch");
     },
 
     createCircle: function(p)
@@ -113,7 +127,6 @@ window.addEventListener('load',function(e) {
      },
 
      touch: function(touch) {
-      console.log("touch!");  
       // store the current timestamp 
       this.timeTouchBegin = new Date().getTime();
      },
