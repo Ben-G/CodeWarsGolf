@@ -9,7 +9,7 @@ window.addEventListener('load',function(e) {
 
   // Set up a standard Quintus instance with only the 
   // Sprites and Scene module (for the stage support) loaded.
-  var Q = window.Q = Quintus().include("Sprites, Scenes, Input, Touch");
+  var Q = window.Q = Quintus().include("Sprites, Scenes, Input, Touch, 2D");
 
   var spawnX = 50;
   var spawnY = 50;
@@ -40,6 +40,57 @@ window.addEventListener('load',function(e) {
       currentStage.insert(new Q.RandomShape());
     }
 
+  });
+
+  Q.MovingSprite.extend("Ball", {
+    init: function(p) {
+      p = this.createCircle(p);
+      p.color = "blue";
+      this._super(p);
+      this.add("2d");
+      this.p.gravity = 0.0;
+      this.on("touch");
+    },
+
+    touch: function(touch) {
+      this.p.vy = -100;
+      console.log("golfball touch");
+    },
+
+    createCircle: function(p)
+    {
+     // not sure what these are for??
+     p = p || {};
+     p.points = [];
+
+     // my code;
+     var theta = 0;
+     var newX = 0,
+      newY = 0;
+     var count = 24.0;
+     for (var i=0; i<count; i++)
+     { 
+      var x = 32,
+       y = 0;  
+      newX = x*Math.cos(theta) - y*Math.sin(theta);
+      newY = x*Math.sin(theta) + y*Math.cos(theta);
+      x = newX;
+      y = newY;
+      theta += 2*Math.PI/count;
+      
+      p.points.push([x,y]);
+     }
+        
+     p.w=32;
+     p.h=32; 
+     p.x = 200*Math.random()+p.w/2;
+     p.y = 200*Math.random()+p.h/2;
+     p.cx = p.w/2;
+     p.cy = p.h/2;
+     p.angle = 1; // it breaks at 0?? why??
+     p.type = 1;
+     return p;
+    }
   });
 
   Q.Sprite.extend("RandomShape", {
@@ -173,6 +224,9 @@ window.addEventListener('load',function(e) {
   // Scene that actually adds shapes onto the stage
   Q.scene("start",new Q.Scene(function(stage) {
     var gameLayer = stage.insert(new Q.SpawnButton());
+    var ball = stage.insert(new Q.Ball);
+    ball.p.x = 200;
+    ball.p.y = 200;
 
     var shapesLeft = numShapes;
     while(shapesLeft-- > 0) {
