@@ -16,6 +16,28 @@ window.addEventListener('load',function(e) {
   // Sprite class for the randomly shapes
   //
   //
+  Q.Sprite.extend("GameLayer", {
+    init: function(p) {
+       // Create a random shape (defined below)
+       p = p || {};
+       p.type = -1;
+       p.collisionMask = Q.SPRITE_NONE;
+       p.w = 960;
+       p.h = 640;
+       p.color = "red";
+       p.z = -1;
+
+       // Initialize the p hash
+       this._super(p);
+       this.on("touch");
+    },
+    
+    touch: function(touch) {
+      console.log("touch Layer!");
+    }
+
+  });
+
   Q.Sprite.extend("RandomShape", {
      init: function(p) {
        // Create a random shape (defined below)
@@ -28,6 +50,11 @@ window.addEventListener('load',function(e) {
        // touch module
        this.on("drag");
        this.on("touchEnd");
+       this.on("touch");
+     },
+
+     touch: function(touch) {
+      console.log("touch!");
      },
 
      drag: function(touch) {
@@ -50,6 +77,7 @@ window.addEventListener('load',function(e) {
 
         p = p || {};
 
+        p.z = 1;
         p.points = [];
 
         var startAmount = 40;
@@ -63,6 +91,7 @@ window.addEventListener('load',function(e) {
 
           if(curY < minY) minY = curY;
           if(curY > maxY) maxY = curY;
+
 
           p.points.push([curX,curY]);
 
@@ -89,7 +118,6 @@ window.addEventListener('load',function(e) {
         p.cx = p.w/2;
         p.cy = p.h/2;
         p.angle = angle;
-        p.type = 1;
        return p;
      },
 
@@ -104,22 +132,22 @@ window.addEventListener('load',function(e) {
          this.p.scale = 1.;
        }
 
-      var maxCol = 3, collided = false, p = this.p;
-      p.hit = false;
-      while((collided = this.stage.search(this)) && maxCol > 0) {
-        if(collided) {
-          // If we're dragging, move other objects
-          // otherwise, move us
-          if(this.p.dragging) { 
-            collided.obj.p.x += collided.separate[0];
-            collided.obj.p.y += collided.separate[1];
-          } else {
-            this.p.x -= collided.separate[0];
-            this.p.y -= collided.separate[1];
-          }
-        }
-        maxCol--;
-      }
+      // var maxCol = 3, collided = false, p = this.p;
+      // p.hit = false;
+      // while((collided = this.stage.search(this)) && maxCol > 0) {
+      //   if(collided) {
+      //     // If we're dragging, move other objects
+      //     // otherwise, move us
+      //     if(this.p.dragging) { 
+      //       collided.obj.p.x += collided.separate[0];
+      //       collided.obj.p.y += collided.separate[1];
+      //     } else {
+      //       this.p.x -= collided.separate[0];
+      //       this.p.y -= collided.separate[1];
+      //     }
+      //   }
+      //   maxCol--;
+      // }
 
 
      }
@@ -132,9 +160,11 @@ window.addEventListener('load',function(e) {
 
   // Scene that actually adds shapes onto the stage
   Q.scene("start",new Q.Scene(function(stage) {
+    var gameLayer = stage.insert(new Q.GameLayer());
+
     var shapesLeft = numShapes;
     while(shapesLeft-- > 0) {
-      stage.insert(new Q.RandomShape());
+      stage.insert(new Q.RandomShape(), gameLayer);
     }
   }));
 
