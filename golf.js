@@ -11,7 +11,7 @@ window.addEventListener('load',function(e) {
   // Sprites and Scene module (for the stage support) loaded.
   var Q = window.Q = Quintus().include("Sprites, Scenes, Input, Touch");
 
-  Q.setup({ width: 480 , height: 320})
+  Q.setup({ width: 320 , height: 480})
    .touch(Q.SPRITE_ALL);
   // Sprite class for the randomly shapes
   //
@@ -56,6 +56,7 @@ window.addEventListener('load',function(e) {
 
      touch: function(touch) {
       console.log("touch!");
+      this.p = this.createShape(this.p);      
      },
 
      drag: function(touch) {
