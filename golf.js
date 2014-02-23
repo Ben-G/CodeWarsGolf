@@ -378,7 +378,7 @@ window.addEventListener('load',function(e) {
 
   });
 
-  Q.MovingSprite.extend("Ball", {
+  Q.Sprite.extend("Ball", {
     init: function(p) {
       p = this.createCircle(p);
       p.color = "blue";
@@ -411,6 +411,19 @@ window.addEventListener('load',function(e) {
       this.speed = Math.sqrt(this.p.vx * this.p.vx + this.p.vy * this.p.vy);
     },
 
+    step: function(dt) {
+     var p = this.p;
+
+     p.vx += p.ax * dt;
+     p.vy += p.ay * dt;
+
+     p.vx -= 200 *dt;
+     p.vy -= 200 *dt;
+
+     p.x += p.vx * dt;
+     p.y += p.vy * dt;
+   },
+
     touch: function(touch) {
       // Make sure penguin.png is loaded
       var ball = this;
@@ -426,9 +439,6 @@ window.addEventListener('load',function(e) {
       newX = (touch.origX + touch.dx);
       newY = (touch.origY + touch.dy);
 
-      // console.log(newX);
-      // console.log(this.p.x);
-
       distanceX = this.p.x - newX;
       distanceY = this.p.y - newY;
       
@@ -440,7 +450,6 @@ window.addEventListener('load',function(e) {
 
       distance = Math.sqrt((distanceX * distanceX) + (distanceY * distanceY));
       this.powerbar.p.scale = (distance / 200);
-      console.log(degrees);
     },
 
      touchEnd: function(touch) {
@@ -449,9 +458,11 @@ window.addEventListener('load',function(e) {
 
         this.p.vy = distanceY;
         this.p.vx = distanceX;
-        this.speed = 100;
         currentStage.remove(this.powerbar);
+        this.speed = Math.sqrt(this.p.vx * this.p.vx + this.p.vy * this.p.vy);
      },
+
+
 
     createCircle: drawCircleDeprecated,
 	
