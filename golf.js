@@ -390,20 +390,21 @@ window.addEventListener('load',function(e) {
       newX = (touch.origX + touch.dx);
       newY = (touch.origY + touch.dy);
 
-      console.log(newX);
-      console.log(this.p.x);
+      // console.log(newX);
+      // console.log(this.p.x);
 
       distanceX = this.p.x - newX;
       distanceY = this.p.y - newY;
       
+      angleCircle = Math.atan2(newY - this.p.y, this.p.x - newX);
+      degrees = angleCircle * (180/Math.PI);
+      degrees = -1 *(degrees - 90);
 
-      tan = Math.tan(distanceX / distanceY);
-      radians = tan * (180/Math.PI);
-
-      this.powerbar.p.angle = radians;
+      this.powerbar.p.angle = degrees;
 
       distance = Math.sqrt((distanceX * distanceX) + (distanceY * distanceY));
       this.powerbar.p.scale = (distance / 200);
+      console.log(degrees);
     },
 
      touchEnd: function(touch) {
