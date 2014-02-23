@@ -87,13 +87,34 @@ window.addEventListener('load',function(e) {
     },
 
     drag: function(touch) {
-      distance = Math.sqrt((touch.dx * touch.dx) + (touch.dy * touch.dy));
+      newX = (touch.origX + touch.dx);
+      newY = (touch.origY + touch.dy);
+
+      console.log(newX);
+      console.log(this.p.x);
+
+        distanceX = this.p.x - newX;
+
+
+      if (newY > this.p.y) {
+        distanceY = newY - this.p.y;
+      } else {
+        distanceY = this.p.y - newY;
+      }
+
+      tan = Math.tan(distanceX / distanceY);
+      radians = tan * (180/Math.PI);
+
+      this.powerbar.p.angle = radians;
+
+      distance = Math.sqrt((distanceX * distanceX) + (distanceY * distanceY));
       this.powerbar.p.scale = (distance / 200);
     },
 
      touchEnd: function(touch) {
         this.p.vy = -100;
         this.speed = 100;
+        currentStage.remove(this.powerbar);
      },
 
     createCircle: function(p)
