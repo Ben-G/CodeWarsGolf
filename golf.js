@@ -731,10 +731,11 @@ window.addEventListener('load',function(e) {
   var scoreText = null;
   var attempts = 0;
   var buildMode = true;
+  var SpawnButton = null
 
   // Scene that actually adds shapes onto the stage
   Q.scene("start",new Q.Scene(function(stage) {
-    var SpawnButton = stage.insert(new Q.SpawnButton());
+    SpawnButton = stage.insert(new Q.SpawnButton());
     SpawnButton.p.x = 80;
     SpawnButton.p.y = 20;
     var ball = stage.insert(new Q.Ball);
@@ -769,6 +770,7 @@ window.addEventListener('load',function(e) {
     playButton.on("click", function() {
       buildMode = false;
       currentStage.forceRemove(playButton);
+      currentStage.forceRemove(SpawnButton);
     });
 
   }));
