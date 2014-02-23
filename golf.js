@@ -134,6 +134,67 @@ window.addEventListener('load',function(e) {
     }
     
   });
+  
+      Q.Sprite.extend('Target', {
+        init: function(p) {
+            p = this.createTarget(p);
+            p.color = "black";
+            this._super(p);
+            this.on("drag");
+            this.on("touchEnd");
+            this.add('physics');
+            this.on("hit",this,"checkHit");
+        },
+        drag: function(touch) {
+            this.p.dragging = true;
+            this.p.x = touch.origX + touch.dx;
+            this.p.y = touch.origY + touch.dy;
+        },
+        touchEnd: function(touch) {
+            this.p.dragging = false;
+
+        },
+        createTarget: function(p) {
+            // not sure what these are for??
+            p = p || {};
+            p.points = [];
+
+            // my code;
+            var theta = 0;
+            var newX = 0,
+                    newY = 0;
+            var count = 24.0;
+            for (var i = 0; i < count; i++)
+            {
+                var x = 24,
+                y = 0;
+                newX = x * Math.cos(theta) - y * Math.sin(theta);
+                newY = x * Math.sin(theta) + y * Math.cos(theta);
+                x = newX;
+                y = newY;
+                theta += 2 * Math.PI / count;
+
+                p.points.push([x, y]);
+            }
+
+            p.w = 24;
+            p.h = 24;
+            p.x = 200 * Math.random() + p.w / 2;
+            p.y = 200 * Math.random() + p.h / 2;
+            p.cx = p.w / 2;
+            p.cy = p.h / 2;
+            p.angle = 1; // it breaks at 0?? why??
+            p.type = 1;
+            return p;
+        },
+        checkHit: function(sprite) {
+            if(sprite.obj.isA("Ball")) {
+                Q.clearStages();
+                Q.stageScene("endGame", 1, {label: "You Won!"});
+            }
+        }
+    });
+
 
   Q.Sprite.extend("RandomShape", {
      init: function(p) {
@@ -274,6 +335,30 @@ window.addEventListener('load',function(e) {
       stage.insert(new Q.RandomShape());
     }
   }));
+  
+        // To display a game over / game won popup box, 
+    // create a endGame scene that takes in a `label` option
+    // to control the displayed message.
+    Q.scene('endGame', function(stage) {
+        var container = stage.insert(new Q.UI.Container({
+            x: Q.width / 2, y: Q.height / 2, fill: "rgba(0,0,0,0.5)"
+        }));
+
+        var button = container.insert(new Q.UI.Button({x: 0, y: 0, fill: "#CCCCCC",
+            label: "Play Again"}))
+        var label = container.insert(new Q.UI.Text({x: 10, y: -10 - button.p.h,
+            label: stage.options.label}));
+        // When the button is clicked, clear all the stages
+        // and restart the game.
+        button.on("click", function() {
+            Q.clearStages();
+            Q.stageScene('start');
+        });
+
+        // Expand the container to visibily fit it's contents
+        container.fit(20);
+    });
+
 
   // Finally call `stageScene` to start the show
   var currentStage = Q.stageScene("start");
