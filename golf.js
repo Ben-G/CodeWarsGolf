@@ -371,6 +371,9 @@ window.addEventListener('load',function(e) {
     },
     
     touch: function(touch) {
+      if (!attemptCompleted) {
+        return;
+      }
       //console.log("touch Layer!");
       currentStage.insert(new Q.RandomShape({ shape:"circle",orientation:0 }));
     }
@@ -389,7 +392,7 @@ window.addEventListener('load',function(e) {
       this.on("touchEnd");
       this.on("hit",this,"collide");
 
-      this.attemptCompleted = true;
+      attemptCompleted = true;
     },
 
     collide: function(col) {
@@ -413,7 +416,7 @@ window.addEventListener('load',function(e) {
     },
 
     touch: function(touch) {
-      if (!this.attemptCompleted) {
+      if (!attemptCompleted) {
         return;
       }
       // Make sure penguin.png is loaded
@@ -432,7 +435,7 @@ window.addEventListener('load',function(e) {
     },
 
     drag: function(touch) {
-      if (!this.attemptCompleted) {
+      if (!attemptCompleted) {
         return;
       }
 
@@ -453,7 +456,7 @@ window.addEventListener('load',function(e) {
     },
 
      touchEnd: function(touch) {
-      if (!this.attemptCompleted) {
+      if (!attemptCompleted) {
         return;
       }
         distanceX = this.p.x - newX;
@@ -464,7 +467,7 @@ window.addEventListener('load',function(e) {
         currentStage.forceRemove(this.powerbar);
         this.powerbar = null;
         this.speed = Math.sqrt(this.p.vx * this.p.vx + this.p.vy * this.p.vy);
-        this.attemptCompleted = false;
+        attemptCompleted = false;
      },
 
 
@@ -502,7 +505,7 @@ window.addEventListener('load',function(e) {
       this.speed = Math.sqrt(this.p.vx * this.p.vx + this.p.vy * this.p.vy);
 
       if (this.speed < 5) {
-        this.attemptCompleted = true;
+        attemptCompleted = true;
         this.speed = 0;
         this.p.vx = 0;
         this.p.vy = 0;
@@ -528,11 +531,18 @@ window.addEventListener('load',function(e) {
             this.on("hit",this,"checkHit");
         },
         drag: function(touch) {
+            if (!attemptCompleted) {
+              return;
+            }
+
             this.p.dragging = true;
             this.p.x = touch.origX + touch.dx;
             this.p.y = touch.origY + touch.dy;
         },
         touchEnd: function(touch) {
+            if (!attemptCompleted) {
+              return;
+            }
             this.p.dragging = false;
 
         },
@@ -581,12 +591,18 @@ window.addEventListener('load',function(e) {
      },
 
      touch: function(touch) {
+      if (!attemptCompleted) {
+        return;
+      }
       //console.log("touch!");  
       // store the current timestamp 
       this.timeTouchBegin = new Date().getTime();
      },
 
      drag: function(touch) {
+      if (!attemptCompleted) {
+        return;
+      }
 	   //console.log("drag!");
        this.p.dragging = true;
        this.p.x = touch.origX + touch.dx;
@@ -595,6 +611,9 @@ window.addEventListener('load',function(e) {
      },
 
      touchEnd: function(touch) {
+      if (!attemptCompleted) {
+        return;
+      }
        this.p.dragging = false;
        currentTime = new Date().getTime();
        // calculate the time difference
@@ -675,7 +694,7 @@ window.addEventListener('load',function(e) {
         // and restart the game.
         button.on("click", function() {
             Q.clearStages();
-            Q.stageScene('start');
+            currentStage = Q.stageScene('start');
         });
 
         // Expand the container to visibily fit it's contents
@@ -692,6 +711,8 @@ window.addEventListener('load',function(e) {
   // in this situation, otherwise nothing would get rendered
   // Q.debug = true;
   // Q.debugFill = true;
+
+  var attemptCompleted = true;
 
   var currentObj = null;
   // Touch events do most of the work for us, but the
