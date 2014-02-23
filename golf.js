@@ -453,7 +453,7 @@ window.addEventListener('load',function(e) {
     },
     
     touch: function(touch) {
-      if (!attemptCompleted) {
+      if (!attemptCompleted || !buildMode) {
         return;
       }
       //console.log("touch Layer!");
@@ -690,7 +690,7 @@ window.addEventListener('load',function(e) {
      },
 
      touch: function(touch) {
-      if (!attemptCompleted) {
+      if (!attemptCompleted || !buildMode) {
         return;
       }
       //console.log("touch!");  
@@ -699,7 +699,7 @@ window.addEventListener('load',function(e) {
      },
 
      drag: function(touch) {
-      if (!attemptCompleted) {
+      if (!attemptCompleted || !buildMode) {
         return;
       }
 	   //console.log("drag!");
@@ -710,7 +710,7 @@ window.addEventListener('load',function(e) {
      },
 
      touchEnd: function(touch) {
-      if (!attemptCompleted) {
+      if (!attemptCompleted || !buildMode) {
         return;
       }
        this.p.dragging = false;
