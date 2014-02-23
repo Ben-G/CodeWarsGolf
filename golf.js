@@ -93,14 +93,9 @@ window.addEventListener('load',function(e) {
       console.log(newX);
       console.log(this.p.x);
 
-        distanceX = this.p.x - newX;
-
-
-      if (newY > this.p.y) {
-        distanceY = newY - this.p.y;
-      } else {
-        distanceY = this.p.y - newY;
-      }
+      distanceX = this.p.x - newX;
+      distanceY = this.p.y - newY;
+      
 
       tan = Math.tan(distanceX / distanceY);
       radians = tan * (180/Math.PI);
@@ -112,7 +107,11 @@ window.addEventListener('load',function(e) {
     },
 
      touchEnd: function(touch) {
-        this.p.vy = -100;
+        distanceX = this.p.x - newX;
+        distanceY = this.p.y - newY;
+
+        this.p.vy = distanceY;
+        this.p.vx = distanceX;
         this.speed = 100;
         currentStage.remove(this.powerbar);
      },
