@@ -377,7 +377,7 @@ window.addEventListener('load',function(e) {
 
   });
 
-  Q.Sprite.extend("Ball", {
+  Q.MovingSprite.extend("Ball", {
     init: function(p) {
       p = this.createCircle(p);
       p.color = "blue";
@@ -388,6 +388,8 @@ window.addEventListener('load',function(e) {
       this.on("drag");
       this.on("touchEnd");
       this.on("hit",this,"collide");
+
+      this.attemptCompleted = true;
     },
 
     collide: function(col) {
@@ -410,24 +412,19 @@ window.addEventListener('load',function(e) {
       this.speed = Math.sqrt(this.p.vx * this.p.vx + this.p.vy * this.p.vy);
     },
 
-    step: function(dt) {
-     var p = this.p;
-
-     p.vx += p.ax * dt;
-     p.vy += p.ay * dt;
-
-     p.vx -= 200 *dt;
-     p.vy -= 200 *dt;
-
-     p.x += p.vx * dt;
-     p.y += p.vy * dt;
-   },
-
     touch: function(touch) {
+      if (!this.attemptCompleted) {
+        return;
+      }
       // Make sure penguin.png is loaded
       var ball = this;
 
       Q.load("powerbar.png",function() {
+         if (this.powerbar) {
+          currentStage.remove(this.powerbar);
+          this.powerbar = null;
+         }
+
          var powerbar = new Q.PowerBar();
          currentStage.insert(powerbar, ball);
          ball.powerbar = powerbar;
@@ -435,6 +432,10 @@ window.addEventListener('load',function(e) {
     },
 
     drag: function(touch) {
+      if (!this.attemptCompleted) {
+        return;
+      }
+
       newX = (touch.origX + touch.dx);
       newY = (touch.origY + touch.dy);
 
@@ -444,45 +445,74 @@ window.addEventListener('load',function(e) {
       angleCircle = Math.atan2(newY - this.p.y, this.p.x - newX);
       degrees = angleCircle * (180/Math.PI);
       degrees = -1 *(degrees - 90);
-
-      this.powerbar.p.angle = degrees;
-
-      distance = Math.sqrt((distanceX * distanceX) + (distanceY * distanceY));
-      this.powerbar.p.scale = (distance / 200);
+      if (this.powerbar) {
+        this.powerbar.p.angle = degrees;
+        distance = Math.sqrt((distanceX * distanceX) + (distanceY * distanceY));
+        this.powerbar.p.scale = (distance / 200);
+      }
     },
 
      touchEnd: function(touch) {
+      if (!this.attemptCompleted) {
+        return;
+      }
         distanceX = this.p.x - newX;
         distanceY = this.p.y - newY;
 
         this.p.vy = distanceY;
         this.p.vx = distanceX;
-        currentStage.remove(this.powerbar);
+        currentStage.forceRemove(this.powerbar);
+        this.powerbar = null;
         this.speed = Math.sqrt(this.p.vx * this.p.vx + this.p.vy * this.p.vy);
+        this.attemptCompleted = false;
      },
 
 
 
     createCircle: drawCircleDeprecated,
 	
-    	step: function(dt) {
+    step: function(dt) {
+      if (this.speed == 0) {
+        return;
+      }
+
       this.p.x += this.p.vx * dt;
       this.p.y += this.p.vy * dt;
 
-      //this.stage.collide(this);
+      fractionX = Math.abs(this.p.vx / this.speed);
+      fractionY = Math.abs(this.p.vy / this.speed);
+
+      // friction
+      if (this.p.vx > 0) {
+        this.p.vx -= 25 * dt * fractionX;
+      }
+
+      if (this.p.vx < 0) {
+        this.p.vx += 25 * dt * fractionX;
+      }
+
+      if (this.p.vy > 0) {
+        this.p.vy -= 25 * dt * fractionY;
+      }
+
+      if (this.p.vy < 0) {
+        this.p.vy += 25 * dt * fractionY;
+      }
 	  
+      this.speed = Math.sqrt(this.p.vx * this.p.vx + this.p.vy * this.p.vy);
+
+      if (this.speed < 5) {
+        this.attemptCompleted = true;
+        this.speed = 0;
+        this.p.vx = 0;
+        this.p.vy = 0;
+      }
       
         if(this.p.x < 24) { this.p.vx = Math.abs(this.p.vx); }
         if(this.p.x > Q.width - 24) { this.p.vx = -Math.abs(this.p.vx); }
 
         if(this.p.y < 24) { this.p.vy = Math.abs(this.p.vy); }
-		if(this.p.y > Q.height - 24) { this.p.vy = -Math.abs(this.p.vy); }
-      
-
-      //if(this.p.y > Q.height) {
-       // this.destroy(); // Remove the ball if it's off the screen
-      //}
-	  
+		    if(this.p.y > Q.height - 24) { this.p.vy = -Math.abs(this.p.vy); }
     }
     
   });
@@ -613,7 +643,7 @@ window.addEventListener('load',function(e) {
   });
 
   // Number of shapes to add to the page
-  var numShapes = 5;
+  var numShapes = 0;
 
   // Scene that actually adds shapes onto the stage
   Q.scene("start",new Q.Scene(function(stage) {
@@ -668,26 +698,26 @@ window.addEventListener('load',function(e) {
   // touch system doesn't handle mousemouse events, so lets add
   // in an event listener and use `Stage.locate` to highlight
   // sprites on desktop.
-  Q.el.addEventListener('mousemove',function(e) {
-    var x = e.offsetX || e.layerX,
-        y = e.offsetY || e.layerY,
-        stage = Q.stage();
+  // Q.el.addEventListener('mousemove',function(e) {
+  //   var x = e.offsetX || e.layerX,
+  //       y = e.offsetY || e.layerY,
+  //       stage = Q.stage();
 
-    // Use the helper methods from the Input Module on Q to
-    // translate from canvas to stage
-    var stageX = Q.canvasToStageX(x, stage),
-        stageY = Q.canvasToStageY(y, stage);
+  //   // Use the helper methods from the Input Module on Q to
+  //   // translate from canvas to stage
+  //   var stageX = Q.canvasToStageX(x, stage),
+  //       stageY = Q.canvasToStageY(y, stage);
 
-    // Find the first object at that position on the stage
-    var obj = stage.locate(stageX,stageY);
+  //   // Find the first object at that position on the stage
+  //   var obj = stage.locate(stageX,stageY);
     
-    // Set a `hit` property so the step method for the 
-    // sprite can handle scale appropriately
-    if(currentObj) { currentObj.p.over = false; }
-    if(obj) {
-      currentObj = obj;
-      obj.p.over = true;
-    }
-  });
+  //   // Set a `hit` property so the step method for the 
+  //   // sprite can handle scale appropriately
+  //   if(currentObj) { currentObj.p.over = false; }
+  //   if(obj) {
+  //     currentObj = obj;
+  //     obj.p.over = true;
+  //   }
+  // });
 });
 
