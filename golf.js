@@ -520,23 +520,28 @@ window.addEventListener('load',function(e) {
     },
 
     drag: function(touch) {
-      if (!attemptCompleted || buildMode) {
+      if (!attemptCompleted) {
         return;
       }
 
-      newX = (touch.origX + touch.dx);
-      newY = (touch.origY + touch.dy);
+      if (!buildMode) {
+        newX = (touch.origX + touch.dx);
+        newY = (touch.origY + touch.dy);
 
-      distanceX = this.p.x - newX;
-      distanceY = this.p.y - newY;
-      
-      angleCircle = Math.atan2(newY - this.p.y, this.p.x - newX);
-      degrees = angleCircle * (180/Math.PI);
-      degrees = -1 *(degrees - 90);
-      if (this.powerbar) {
-        this.powerbar.p.angle = degrees;
-        distance = Math.sqrt((distanceX * distanceX) + (distanceY * distanceY));
-        this.powerbar.p.scale = (distance / 200);
+        distanceX = this.p.x - newX;
+        distanceY = this.p.y - newY;
+        
+        angleCircle = Math.atan2(newY - this.p.y, this.p.x - newX);
+        degrees = angleCircle * (180/Math.PI);
+        degrees = -1 *(degrees - 90);
+        if (this.powerbar) {
+          this.powerbar.p.angle = degrees;
+          distance = Math.sqrt((distanceX * distanceX) + (distanceY * distanceY));
+          this.powerbar.p.scale = (distance / 200);
+        }
+      } else {
+          this.p.x = touch.origX + touch.dx;
+          this.p.y = touch.origY + touch.dy;
       }
     },
 
