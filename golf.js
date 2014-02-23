@@ -420,22 +420,29 @@ window.addEventListener('load',function(e) {
   // Sprites and Scene module (for the stage support) loaded.
   var Q = window.Q = Quintus().include("Sprites, Scenes, Input, Touch, 2D, UI");
 
-  var spawnX = 50;
-  var spawnY = 50;
+  var spawnX = 100;
+  var spawnY = 100;
 
   
   Q.setup({ maximize: true })
    .touch(Q.SPRITE_ALL);
   // Sprite class for the randomly shapes
   //
+  // new Q.UI.Button({
+  //     label: "A Button",
+  //     y: 150,
+  //     x: Q.width/2
+  //   }, function() {
+  //     this.p.label = "Pressed";
+  //   }));
   //
-  Q.Sprite.extend("SpawnButton", {
+  Q.UI.Button.extend("SpawnButton", {
     init: function(p) {
        // Create a random shape (defined below)
        p = p || {};
+       p.label = "New shape";
+       p.fill = "#CCCCCC";
        p.type = -1;
-       p.collisionMask = Q.SPRITE_NONE;
-       p.w = 64;
        p.h = 64;
        p.color = "red";
        p.z = -1;
@@ -471,6 +478,9 @@ window.addEventListener('load',function(e) {
     },
 
     collide: function(col) {
+      if (buildMode) {
+        return;
+      }
       s = this.speed - (0.2 * 100);
 
       if (s < 0) {
@@ -491,7 +501,7 @@ window.addEventListener('load',function(e) {
     },
 
     touch: function(touch) {
-      if (!attemptCompleted) {
+      if (!attemptCompleted || buildMode) {
         return;
       }
       // Make sure penguin.png is loaded
@@ -510,7 +520,7 @@ window.addEventListener('load',function(e) {
     },
 
     drag: function(touch) {
-      if (!attemptCompleted) {
+      if (!attemptCompleted || buildMode) {
         return;
       }
 
@@ -531,7 +541,7 @@ window.addEventListener('load',function(e) {
     },
 
      touchEnd: function(touch) {
-      if (!attemptCompleted) {
+      if (!attemptCompleted || buildMode) {
         return;
       }
         distanceX = this.p.x - newX;
@@ -626,6 +636,10 @@ window.addEventListener('load',function(e) {
         createTarget: drawCircleDeprecated,
 		
         checkHit: function(sprite) {
+            if (buildMode) {
+              return;
+            }
+            
             if(sprite.obj.isA("Ball")) {
                 Q.clearStages();
                 Q.stageScene("endGame", 1, {label: "You Won!"});
@@ -704,50 +718,19 @@ window.addEventListener('load',function(e) {
      },
 
      createShape:	drawShapes,
-
-     // If the mousemove event below sets the
-     // hit variable, scale this sucker up a bit.
-     //
-     // Also move to avoid collisions with any other sprites
-     step: function(dt) {
-	 /*
-       if(this.p.over) {
-         this.p.scale = 1.2;
-       } else {
-         this.p.scale = 1.;
-       }
-	   */
-
-      // var maxCol = 3, collided = false, p = this.p;
-      // p.hit = false;
-      // while((collided = this.stage.search(this)) && maxCol > 0) {
-      //   if(collided) {
-      //     // If we're dragging, move other objects
-      //     // otherwise, move us
-      //     if(this.p.dragging) { 
-      //       collided.obj.p.x += collided.separate[0];
-      //       collided.obj.p.y += collided.separate[1];
-      //     } else {
-      //       this.p.x -= collided.separate[0];
-      //       this.p.y -= collided.separate[1];
-      //     }
-      //   }
-      //   maxCol--;
-      // }
-
-     }
-
-
   });
 
   // Number of shapes to add to the page
   var numShapes = 0;
   var scoreText = null;
   var attempts = 0;
+  var buildMode = true;
 
   // Scene that actually adds shapes onto the stage
   Q.scene("start",new Q.Scene(function(stage) {
-    var gameLayer = stage.insert(new Q.SpawnButton());
+    var SpawnButton = stage.insert(new Q.SpawnButton());
+    SpawnButton.p.x = 80;
+    SpawnButton.p.y = 20;
     var ball = stage.insert(new Q.Ball);
     ball.p.x = 200;
     ball.p.y = 200;
@@ -764,6 +747,22 @@ window.addEventListener('load',function(e) {
       x: Q.width - 140,
       y: 20
     }));
+
+    var playButton = stage.insert(new Q.UI.Button({
+      label: "Play!",
+      y: 50,
+      x: Q.width - 150,
+      fill: "#990000",
+      border: 5,
+      shadow: 10,
+      shadowColor: "rgba(0,0,0,0.5)"
+    }));
+
+    playButton.on("click", function() {
+      buildMode = false;
+      currentStage.forceRemove(playButton);
+    });
+
   }));
   
         // To display a game over / game won popup box, 
@@ -783,6 +782,7 @@ window.addEventListener('load',function(e) {
         button.on("click", function() {
             Q.clearStages();
             currentStage = Q.stageScene('start');
+            buildMode = true;
         });
 
         // Expand the container to visibily fit it's contents
