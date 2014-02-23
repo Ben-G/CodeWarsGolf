@@ -626,7 +626,7 @@ window.addEventListener('load',function(e) {
             this.on("hit",this,"checkHit");
         },
         drag: function(touch) {
-            if (!attemptCompleted) {
+            if (!attemptCompleted || !buildMode) {
               return;
             }
 
@@ -635,7 +635,7 @@ window.addEventListener('load',function(e) {
             this.p.y = touch.origY + touch.dy;
         },
         touchEnd: function(touch) {
-            if (!attemptCompleted) {
+            if (!attemptCompleted || !buildMode) {
               return;
             }
             this.p.dragging = false;
