@@ -550,7 +550,7 @@ window.addEventListener('load',function(e) {
     createCircle: drawCircleDeprecated,
 	
     step: function(dt) {
-      if (this.speed == 0) {
+      if (this.speed == 0 || attemptCompleted) {
         return;
       }
 
@@ -561,30 +561,32 @@ window.addEventListener('load',function(e) {
       fractionY = Math.abs(this.p.vy / this.speed);
 
       // friction
-      // if (this.p.vx > 0) {
-      //   this.p.vx -= 25 * dt * fractionX;
-      // }
+      if (this.p.vx > 0) {
+        this.p.vx -= 25 * dt * fractionX;
+      }
 
-      // if (this.p.vx < 0) {
-      //   this.p.vx += 25 * dt * fractionX;
-      // }
+      if (this.p.vx < 0) {
+        this.p.vx += 25 * dt * fractionX;
+      }
 
-      // if (this.p.vy > 0) {
-      //   this.p.vy -= 25 * dt * fractionY;
-      // }
+      if (this.p.vy > 0) {
+        this.p.vy -= 25 * dt * fractionY;
+      }
 
-      // if (this.p.vy < 0) {
-      //   this.p.vy += 25 * dt * fractionY;
-      // }
+      if (this.p.vy < 0) {
+        this.p.vy += 25 * dt * fractionY;
+      }
 	  
-      // this.speed = Math.sqrt(this.p.vx * this.p.vx + this.p.vy * this.p.vy);
+      this.speed = Math.sqrt(this.p.vx * this.p.vx + this.p.vy * this.p.vy);
 
-      // if (this.speed < 5) {
-      //   attemptCompleted = true;
-      //   this.speed = 0;
-      //   this.p.vx = 0;
-      //   this.p.vy = 0;
-      // }
+      if (this.speed < 5) {
+        attemptCompleted = true;
+        attempts++;
+        scoreText.p.label = "Attempts: "+attempts;
+        this.speed = 0;
+        this.p.vx = 0;
+        this.p.vy = 0;
+      }
       
         if(this.p.x < 24) { this.p.vx = Math.abs(this.p.vx); }
         if(this.p.x > Q.width - 24) { this.p.vx = -Math.abs(this.p.vx); }
@@ -628,6 +630,7 @@ window.addEventListener('load',function(e) {
             if(sprite.obj.isA("Ball")) {
                 Q.clearStages();
                 Q.stageScene("endGame", 1, {label: "You Won!"});
+                attempts = 0;
             }
         }
     });
@@ -740,6 +743,8 @@ window.addEventListener('load',function(e) {
 
   // Number of shapes to add to the page
   var numShapes = 0;
+  var scoreText = null;
+  var attempts = 0;
 
   // Scene that actually adds shapes onto the stage
   Q.scene("start",new Q.Scene(function(stage) {
@@ -752,10 +757,16 @@ window.addEventListener('load',function(e) {
     while(shapesLeft-- > 0) {
       stage.insert(new Q.RandomShape({ shape:"circle", orientation:0 }));
     }
-	
 	Q.load("target.png",function() {
 		stage.insert(new Q.Target({x: 90, y: 90}));
     });
+
+    scoreText = stage.insert(new Q.UI.Text({ 
+      label: "Attempts: 0",
+      color: "white",
+      x: Q.width - 140,
+      y: 20
+    }));
   }));
   
         // To display a game over / game won popup box, 
@@ -791,6 +802,8 @@ window.addEventListener('load',function(e) {
   // in this situation, otherwise nothing would get rendered
   // Q.debug = true;
   // Q.debugFill = true;
+
+  Q.load("powerbar.png");
 
   var attemptCompleted = true;
 
