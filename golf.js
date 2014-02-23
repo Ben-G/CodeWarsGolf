@@ -755,7 +755,7 @@ window.addEventListener('load',function(e) {
     scoreText = stage.insert(new Q.UI.Text({ 
       label: "Attempts: 0",
       color: "white",
-      x: Q.width - 140,
+      x: Q.width - 85,
       y: 20
     }));
 
