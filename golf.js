@@ -107,6 +107,41 @@ function drawAngle(p, orientation)
 	return p;
 }
 
+function drawCircleDeprecated(p)
+{
+	// not sure what these are for??
+     p = p || {};
+     p.points = [];
+
+     // my code;
+     var theta = 0;
+     var newX = 0,
+      newY = 0;
+     var count = 24.0;
+     for (var i=0; i<count; i++)
+     { 
+      var x = 32,
+       y = 0;  
+      newX = x*Math.cos(theta) - y*Math.sin(theta);
+      newY = x*Math.sin(theta) + y*Math.cos(theta);
+      x = newX;
+      y = newY;
+      theta += 2*Math.PI/count;
+      
+      p.points.push([x,y]);
+     }
+        
+     p.w=32;
+     p.h=32; 
+     p.x = 200*Math.random()+p.w/2;
+     p.y = 200*Math.random()+p.h/2;
+     p.cx = p.w/2;
+     p.cy = p.h/2;
+     p.angle = 1; // it breaks at 0?? why??
+     p.type = 1;
+     return p;
+}
+
 function drawCircle(p, sides, phi)
 {
 	// not sure what these are for??
@@ -141,6 +176,7 @@ function drawCircle(p, sides, phi)
 	p.type = 1;
 	return p;
 }
+
 function drawRandomShape(p) 
 {
 	var angle = Math.random()*2*Math.PI,
@@ -417,41 +453,8 @@ window.addEventListener('load',function(e) {
         currentStage.remove(this.powerbar);
      },
 
-    createCircle: function(p)
-    {
-     // not sure what these are for??
-     p = p || {};
-     p.points = [];
-
-     // my code;
-     var theta = 0;
-     var newX = 0,
-      newY = 0;
-     var count = 24.0;
-     for (var i=0; i<count; i++)
-     { 
-      var x = 32,
-       y = 0;  
-      newX = x*Math.cos(theta) - y*Math.sin(theta);
-      newY = x*Math.sin(theta) + y*Math.cos(theta);
-      x = newX;
-      y = newY;
-      theta += 2*Math.PI/count;
-      
-      p.points.push([x,y]);
-     }
-        
-     p.w=32;
-     p.h=32; 
-     p.x = 200*Math.random()+p.w/2;
-     p.y = 200*Math.random()+p.h/2;
-     p.cx = p.w/2;
-     p.cy = p.h/2;
-     p.angle = 1; // it breaks at 0?? why??
-     p.type = 1;
-     return p;
-    },
-    
+    createCircle: drawCircleDeprecated,
+	
     	step: function(dt) {
       this.p.x += this.p.vx * dt;
       this.p.y += this.p.vy * dt;
@@ -493,39 +496,8 @@ window.addEventListener('load',function(e) {
             this.p.dragging = false;
 
         },
-        createTarget: function(p) {
-            // not sure what these are for??
-            p = p || {};
-            p.points = [];
-
-            // my code;
-            var theta = 0;
-            var newX = 0,
-                    newY = 0;
-            var count = 24.0;
-            for (var i = 0; i < count; i++)
-            {
-                var x = 24,
-                y = 0;
-                newX = x * Math.cos(theta) - y * Math.sin(theta);
-                newY = x * Math.sin(theta) + y * Math.cos(theta);
-                x = newX;
-                y = newY;
-                theta += 2 * Math.PI / count;
-
-                p.points.push([x, y]);
-            }
-
-            p.w = 24;
-            p.h = 24;
-            p.x = 200 * Math.random() + p.w / 2;
-            p.y = 200 * Math.random() + p.h / 2;
-            p.cx = p.w / 2;
-            p.cy = p.h / 2;
-            p.angle = 1; // it breaks at 0?? why??
-            p.type = 1;
-            return p;
-        },
+        createTarget: drawCircleDeprecated,
+		
         checkHit: function(sprite) {
             if(sprite.obj.isA("Ball")) {
                 Q.clearStages();
