@@ -611,6 +611,7 @@ window.addEventListener('load',function(e) {
         init: function(p) {
             p = this.createTarget(p, 32);
             p.color = "black";
+            p.asset = "target.png";
             this._super(p);
             this.on("drag");
             this.on("touchEnd");
@@ -739,7 +740,9 @@ window.addEventListener('load',function(e) {
     while(shapesLeft-- > 0) {
       stage.insert(new Q.RandomShape({ shape:"circle", orientation:0 }));
     }
-    stage.insert(new Q.Target({x: 90, y: 90}));
+	Q.load("target.png",function() {
+		stage.insert(new Q.Target({x: 90, y: 90}));
+    });
 
     scoreText = stage.insert(new Q.UI.Text({ 
       label: "Attempts: 0",
