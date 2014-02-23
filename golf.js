@@ -561,30 +561,30 @@ window.addEventListener('load',function(e) {
       fractionY = Math.abs(this.p.vy / this.speed);
 
       // friction
-      // if (this.p.vx > 0) {
-      //   this.p.vx -= 25 * dt * fractionX;
-      // }
+      if (this.p.vx > 0) {
+        this.p.vx -= 25 * dt * fractionX;
+      }
 
-      // if (this.p.vx < 0) {
-      //   this.p.vx += 25 * dt * fractionX;
-      // }
+      if (this.p.vx < 0) {
+        this.p.vx += 25 * dt * fractionX;
+      }
 
-      // if (this.p.vy > 0) {
-      //   this.p.vy -= 25 * dt * fractionY;
-      // }
+      if (this.p.vy > 0) {
+        this.p.vy -= 25 * dt * fractionY;
+      }
 
-      // if (this.p.vy < 0) {
-      //   this.p.vy += 25 * dt * fractionY;
-      // }
+      if (this.p.vy < 0) {
+        this.p.vy += 25 * dt * fractionY;
+      }
 	  
-      // this.speed = Math.sqrt(this.p.vx * this.p.vx + this.p.vy * this.p.vy);
+      this.speed = Math.sqrt(this.p.vx * this.p.vx + this.p.vy * this.p.vy);
 
-      // if (this.speed < 5) {
-      //   attemptCompleted = true;
-      //   this.speed = 0;
-      //   this.p.vx = 0;
-      //   this.p.vy = 0;
-      // }
+      if (this.speed < 5) {
+        attemptCompleted = true;
+        this.speed = 0;
+        this.p.vx = 0;
+        this.p.vy = 0;
+      }
       
         if(this.p.x < 24) { this.p.vx = Math.abs(this.p.vx); }
         if(this.p.x > Q.width - 24) { this.p.vx = -Math.abs(this.p.vx); }
@@ -787,6 +787,8 @@ window.addEventListener('load',function(e) {
   // in this situation, otherwise nothing would get rendered
   // Q.debug = true;
   // Q.debugFill = true;
+
+  Q.load("powerbar.png");
 
   var attemptCompleted = true;
 
