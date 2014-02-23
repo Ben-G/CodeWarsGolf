@@ -1,3 +1,303 @@
+
+//////////////////
+// KNOWN ISSUES //
+//////////////////
+/*
+	-Touch drag is automatically called in Chrome on Windows; Use FireFox;
+*/
+//////////////////////
+// END KNOWN ISSUES //
+//////////////////////
+
+/////////////
+// GLOBALS //
+/////////////
+
+/////////////////
+// END GLOBALS //
+/////////////////
+
+////////////////////////
+// DRAW SHAPES REGION //
+////////////////////////
+
+function drawSquare(p)
+{
+	// not sure what these are for??
+	p = p || {};
+	p.points = [];
+
+	// my code;
+	p.points.push([0,0]);
+	p.points.push([64,0]);
+	p.points.push([64,64]);
+	p.points.push([0,64]);
+		  
+	p.w=64;
+	p.h=64;	
+	//p.x = 200*Math.random()+p.w/2;
+	//p.y = 200*Math.random()+p.h/2;
+	p.cx = p.w/2;
+	p.cy = p.h/2;
+	p.angle = 90; // it breaks at 0?? why??
+	p.type = 1;
+	return p;
+}
+
+function drawDiamond(p)
+{
+	// not sure what these are for??
+	p = p || {};
+	p.points = [];
+
+	// my code;
+	p.points.push([32,0]);
+	p.points.push([0,32]);
+	p.points.push([-32,0]);
+	p.points.push([0,-32]);
+		  
+	p.w=64;
+	p.h=64;	
+	//p.x = 200*Math.random()+p.w/2;
+	//p.y = 200*Math.random()+p.h/2;
+	p.cx = p.w/2;
+	p.cy = p.h/2;
+	p.angle = 1; // it breaks at 0?? why??
+	p.type = 1;
+	return p;
+}
+
+function drawAngle(p, orientation)
+{
+	// not sure what these are for??
+	p = p || {};
+	p.points = [];
+
+	// my code;
+	p.points.push([0,0]);
+	p.points.push([64,0]);
+	p.points.push([64,64]);
+	//console.log(orientation + " SS");
+	switch (orientation)
+	{
+		case 0:		
+		p.angle = 360; // it breaks at 0?? why??
+		break;
+		
+		case 1:		
+		p.angle = 90; // it breaks at 0?? why??
+		break;
+		
+		case 2:		
+		p.angle = 180; // it breaks at 0?? why??
+		break;
+		
+		case 3:		
+		p.angle = 270; // it breaks at 0?? why??
+		break;
+	}
+		  
+	p.w=64;
+	p.h=64;	
+	//p.x = 200*Math.random()+p.w/2;
+	//p.y = 200*Math.random()+p.h/2;
+	p.cx = p.w/2;
+	p.cy = p.h/2;
+	p.type = 1;
+	return p;
+}
+
+function drawCircle(p, sides, phi)
+{
+	// not sure what these are for??
+	p = p || {};
+	p.points = [];
+
+	// my code;
+	var theta = 0;
+	var newX = 0,
+		newY = 0;
+	var count = sides;
+	for (var i=0; i<count; i++)
+	{	
+		var x = 32,
+			y = 0;		
+		newX = x*Math.cos(theta) - y*Math.sin(theta);
+		newY = x*Math.sin(theta) + y*Math.cos(theta);
+		x = newX;
+		y = newY;
+		theta += 2*Math.PI/count;
+		
+		p.points.push([x,y]);
+	}
+		  
+	p.w=32;
+	p.h=32;	
+	//p.x = 200*Math.random()+p.w/2;
+	//p.y = 200*Math.random()+p.h/2;
+	p.cx = p.w/2;
+	p.cy = p.h/2;
+	p.angle = phi; // it breaks at 0?? why??
+	p.type = 1;
+	return p;
+}
+function drawRandomShape(p) 
+{
+	var angle = Math.random()*2*Math.PI,
+		numPoints = 3 + Math.floor(Math.random()*5),
+		minX = 0, maxX = 0,
+		minY = 0, maxY = 0,
+		curX, curY;
+
+	p = p || {};
+
+	p.z = 1;
+	p.points = [];
+
+	var startAmount = 40;
+
+	for(var i = 0;i < numPoints;i++) {
+	  curX = Math.floor(Math.cos(angle)*startAmount);
+	  curY = Math.floor(Math.sin(angle)*startAmount);
+
+	  if(curX < minX) minX = curX;
+	  if(curX > maxX) maxX = curX;
+
+	  if(curY < minY) minY = curY;
+	  if(curY > maxY) maxY = curY;
+
+
+	  p.points.push([curX,curY]);
+
+	  startAmount += Math.floor(Math.random()*10);
+	  angle += (Math.PI * 2) / (numPoints+1);
+	};
+
+	maxX += 30;
+	minX -= 30;
+	maxY += 30;
+	minY -= 30;
+
+	p.w = maxX - minX;
+	p.h = maxY - minY;
+
+	for(var i = 0;i < numPoints;i++) {
+	  p.points[i][0] -= minX + p.w/2;
+	  p.points[i][1] -= minY + p.h/2;
+	}
+
+	p.cx = p.w/2;
+	p.cy = p.h/2;
+	p.angle = angle;
+   return p;
+ }
+	
+function advanceShape(p, shape, orientation)
+{
+//console.log(orientation);
+	var nextShape = shape;
+	switch (shape)
+	{
+		case "circle":
+		nextShape = "hexagon";
+		break;
+		
+		case "hexagon":
+		nextShape = "octagon";
+		break;
+		
+		case "octagon":
+		nextShape = "square";
+		break;
+		
+		case "square":
+		nextShape = "diamond";
+		break;
+		
+		case "diamond":
+		nextShape = "angle";
+		break;
+		
+		case "angle":
+		switch (orientation)
+		{
+			case 0:
+			p.orientation = 1;
+			break;
+			
+			case 1:
+			p.orientation = 2;
+			break;
+			
+			case 2:
+			p.orientation = 3;
+			break;
+			
+			case 3:
+			p.orientation = 0;
+			nextShape = "circle";
+			break;			
+		}
+		break;		
+		
+		/*
+		case "random":
+		nextShape = "circle";
+		break;
+		*/
+	}
+	return nextShape;
+}
+ 
+// advance is a flag to toggle to the next shape;
+function drawShapes(p, shape, orientation, advance)
+{
+	if (advance == true)
+	{
+		shape = advanceShape(p, shape, orientation);
+		p.shape = shape;
+	}
+		
+	switch (shape)
+	{
+		case "circle":
+		return drawCircle(p, 24, 1);
+		break;
+		
+		case "hexagon":
+		return drawCircle(p, 6, 180);
+		break;
+		
+		case "octagon":
+		return drawCircle(p, 8, 22.5);
+		break;
+		
+		case "square":
+		return drawSquare(p);
+		break;
+		
+		case "diamond":
+		return drawDiamond(p);
+		break;
+		
+		case "angle":
+		return drawAngle(p, p.orientation);
+		break;		
+		
+		case "random":
+		return drawRandomShape(p, orientation);
+		break;
+	}
+}
+
+////////////////////////////
+// END DRAW SHAPES REGION //
+////////////////////////////
+
+/////////////////////////
+// MAIN QUINTUS REGION //
+/////////////////////////
+
 // # Quintus Touch and Drag Example
 //
 // [Run the example](../examples/touch/index.html)
@@ -6,7 +306,6 @@
 // and then adds touch and drag support to them.
 window.addEventListener('load',function(e) {
 
-
   // Set up a standard Quintus instance with only the 
   // Sprites and Scene module (for the stage support) loaded.
   var Q = window.Q = Quintus().include("Sprites, Scenes, Input, Touch, 2D, UI");
@@ -14,7 +313,8 @@ window.addEventListener('load',function(e) {
   var spawnX = 50;
   var spawnY = 50;
 
-  Q.setup({ width: Q.width , height: Q.height})
+  
+  Q.setup("c1")
    .touch(Q.SPRITE_ALL);
   // Sprite class for the randomly shapes
   //
@@ -36,7 +336,8 @@ window.addEventListener('load',function(e) {
     },
     
     touch: function(touch) {
-      currentStage.insert(new Q.RandomShape());
+      //console.log("touch Layer!");
+      currentStage.insert(new Q.RandomShape({ shape:"circle",orientation:0 }));
     }
 
   });
@@ -47,7 +348,6 @@ window.addEventListener('load',function(e) {
       p.color = "blue";
       this._super(p);
       this.add("2d");
-      this.add("aiBounce");
       this.p.gravity = 0.0;
       this.on("touch");
       this.on("drag");
@@ -251,7 +551,8 @@ window.addEventListener('load',function(e) {
   Q.Sprite.extend("RandomShape", {
      init: function(p) {
        // Create a random shape (defined below)
-       p =this.createShape(p);
+	   p = this.createShape(p, p.shape, p.orientation, false);
+       //p = this.createShape(p);
        p.x = spawnX;
        p.y = spawnY;
        p.color = "yellow";
@@ -268,11 +569,13 @@ window.addEventListener('load',function(e) {
      },
 
      touch: function(touch) {
+      //console.log("touch!");  
       // store the current timestamp 
       this.timeTouchBegin = new Date().getTime();
      },
 
      drag: function(touch) {
+	   //console.log("drag!");
        this.p.dragging = true;
        this.p.x = touch.origX + touch.dx;
        this.p.y = touch.origY + touch.dy;
@@ -284,71 +587,26 @@ window.addEventListener('load',function(e) {
        currentTime = new Date().getTime();
        // calculate the time difference
        timeDiff = currentTime - this.timeTouchBegin;
+	   //console.log(currentTime + " " + this.timeTouchBegin);
        if (timeDiff < 200) {
-        this.p = this.createShape(this.p);  
+        this.p = this.createShape(this.p, this.p.shape, this.p.orientation, true); 		
        }
      },
 
-     createShape: function(p) {
-        var angle = Math.random()*2*Math.PI,
-            numPoints = 3 + Math.floor(Math.random()*5),
-            minX = 0, maxX = 0,
-            minY = 0, maxY = 0,
-            curX, curY;
-
-        p = p || {};
-
-        p.z = 1;
-        p.points = [];
-
-        var startAmount = 40;
-
-        for(var i = 0;i < numPoints;i++) {
-          curX = Math.floor(Math.cos(angle)*startAmount);
-          curY = Math.floor(Math.sin(angle)*startAmount);
-
-          if(curX < minX) minX = curX;
-          if(curX > maxX) maxX = curX;
-
-          if(curY < minY) minY = curY;
-          if(curY > maxY) maxY = curY;
-
-
-          p.points.push([curX,curY]);
-
-          startAmount += Math.floor(Math.random()*10);
-          angle += (Math.PI * 2) / (numPoints+1);
-        };
-
-        maxX += 30;
-        minX -= 30;
-        maxY += 30;
-        minY -= 30;
-
-        p.w = maxX - minX;
-        p.h = maxY - minY;
-
-        for(var i = 0;i < numPoints;i++) {
-          p.points[i][0] -= minX + p.w/2;
-          p.points[i][1] -= minY + p.h/2;
-        }
-
-        p.cx = p.w/2;
-        p.cy = p.h/2;
-        p.angle = angle;
-       return p;
-     },
+     createShape:	drawShapes,
 
      // If the mousemove event below sets the
      // hit variable, scale this sucker up a bit.
      //
      // Also move to avoid collisions with any other sprites
      step: function(dt) {
+	 /*
        if(this.p.over) {
          this.p.scale = 1.2;
        } else {
          this.p.scale = 1.;
        }
+	   */
 
       // var maxCol = 3, collided = false, p = this.p;
       // p.hit = false;
@@ -384,7 +642,7 @@ window.addEventListener('load',function(e) {
 
     var shapesLeft = numShapes;
     while(shapesLeft-- > 0) {
-      stage.insert(new Q.RandomShape());
+      stage.insert(new Q.RandomShape({ shape:"circle", orientation:0 }));
     }
   }));
   
@@ -439,7 +697,6 @@ window.addEventListener('load',function(e) {
 
     // Find the first object at that position on the stage
     var obj = stage.locate(stageX,stageY);
-
     
     // Set a `hit` property so the step method for the 
     // sprite can handle scale appropriately
@@ -449,6 +706,5 @@ window.addEventListener('load',function(e) {
       obj.p.over = true;
     }
   });
-
 });
 
