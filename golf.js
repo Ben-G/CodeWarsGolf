@@ -50,6 +50,8 @@ window.addEventListener('load',function(e) {
       this.add("aiBounce");
       this.p.gravity = 0.0;
       this.on("touch");
+      this.on("drag");
+      this.on("touchEnd");
       this.on("hit",this,"collide");
     },
 
@@ -74,9 +76,25 @@ window.addEventListener('load',function(e) {
     },
 
     touch: function(touch) {
-      this.p.vy = -100;
-      this.speed = 100;
+      // Make sure penguin.png is loaded
+      var ball = this;
+
+      Q.load("powerbar.png",function() {
+         var powerbar = new Q.PowerBar();
+         currentStage.insert(powerbar, ball);
+         ball.powerbar = powerbar;
+       });
     },
+
+    drag: function(touch) {
+      distance = Math.sqrt((touch.dx * touch.dx) + (touch.dy * touch.dy));
+      this.powerbar.p.scale = (distance / 200);
+    },
+
+     touchEnd: function(touch) {
+        this.p.vy = -100;
+        this.speed = 100;
+     },
 
     createCircle: function(p)
     {
@@ -133,6 +151,19 @@ window.addEventListener('load',function(e) {
 	  
     }
     
+  });
+
+  Q.Sprite.extend("PowerBar", {
+     init: function(p) { 
+      p = p || {};
+      p.asset = "powerbar.png"
+      p.points = [];
+      p.cy = 0;
+      p.scale = 0.1;
+      p.collisionMask = Q.SPRITE_NONE;
+      p.type = -1;
+      this._super(p);
+     }
   });
 
   Q.Sprite.extend("RandomShape", {
