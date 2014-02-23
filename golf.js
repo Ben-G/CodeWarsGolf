@@ -1,4 +1,16 @@
 
+/*
+	2014 EA Code Wars Hackathon
+	Team RandomZ
+	Project PuttZ
+	Amy
+	Benji
+	Jacob
+	Sean
+
+	Quintus Javascript HTML5 Game Engine: http://html5quintus.com/
+*/
+
 //////////////////
 // KNOWN ISSUES //
 //////////////////
@@ -16,6 +28,25 @@
 /////////////////
 // END GLOBALS //
 /////////////////
+
+///////////////////////
+// DRAWING FUNCTIONS //
+///////////////////////
+
+///////////////////////
+// END DRAWING FUNCTIONS //
+///////////////////////
+
+
+// SOURCE: http://stackoverflow.com/questions/1484506/random-color-generator-in-javascript
+function getRandomColor() {
+    var letters = '0123456789ABCDEF'.split('');
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.round(Math.random() * 15)];
+    }
+    return color;
+}
 
 ////////////////////////
 // DRAW SHAPES REGION //
@@ -40,6 +71,38 @@ function drawSquare(p)
 	p.cx = p.w/2;
 	p.cy = p.h/2;
 	p.angle = 90; // it breaks at 0?? why??
+	p.type = 1;
+	return p;
+}
+
+function drawBar(p, orientation)
+{
+	// not sure what these are for??
+	p = p || {};
+	p.points = [];
+
+	// my code;
+	p.points.push([-32,-16]);
+	p.points.push([32,-16]);
+	p.points.push([32,16]);
+	p.points.push([-32,16]);
+		  
+	switch (orientation)
+	{
+		case 0:
+		p.angle = 90; // it breaks at 0?? why??
+		break;
+		case 1:
+		p.angle = 180; // it breaks at 0?? why??
+		break;
+	}
+		  
+	p.w=64;
+	p.h=64;	
+	//p.x = 200*Math.random()+p.w/2;
+	//p.y = 200*Math.random()+p.h/2;
+	p.cx = p.w/2;
+	p.cy = p.h/2;	
 	p.type = 1;
 	return p;
 }
@@ -107,7 +170,7 @@ function drawAngle(p, orientation)
 	return p;
 }
 
-function drawCircleDeprecated(p)
+function drawCircleDeprecated(p, size)
 {
 	// not sure what these are for??
      p = p || {};
@@ -120,7 +183,7 @@ function drawCircleDeprecated(p)
      var count = 24.0;
      for (var i=0; i<count; i++)
      { 
-      var x = 32,
+      var x = size,
        y = 0;  
       newX = x*Math.cos(theta) - y*Math.sin(theta);
       newY = x*Math.sin(theta) + y*Math.cos(theta);
@@ -131,8 +194,8 @@ function drawCircleDeprecated(p)
       p.points.push([x,y]);
      }
         
-     p.w=32;
-     p.h=32; 
+     p.w=size;
+     p.h=size; 
      p.x = 200*Math.random()+p.w/2;
      p.y = 200*Math.random()+p.h/2;
      p.cx = p.w/2;
@@ -235,6 +298,24 @@ function advanceShape(p, shape, orientation)
 	switch (shape)
 	{
 		case "circle":
+		nextShape = "bar";
+		break;
+		
+		case "bar":
+		switch (orientation)
+		{
+			case 0:
+			p.orientation = 1;
+			break;
+			
+			case 1:
+			p.orientation = 0;
+			nextShape = "square";
+			break;		
+		}
+		break;
+		
+		case "square":
 		nextShape = "hexagon";
 		break;
 		
@@ -243,10 +324,6 @@ function advanceShape(p, shape, orientation)
 		break;
 		
 		case "octagon":
-		nextShape = "square";
-		break;
-		
-		case "square":
 		nextShape = "diamond";
 		break;
 		
@@ -310,6 +387,10 @@ function drawShapes(p, shape, orientation, advance)
 		
 		case "square":
 		return drawSquare(p);
+		break;
+		
+		case "bar":
+		return drawBar(p, p.orientation);
 		break;
 		
 		case "diamond":
@@ -380,7 +461,7 @@ window.addEventListener('load',function(e) {
 
   Q.MovingSprite.extend("Ball", {
     init: function(p) {
-      p = this.createCircle(p);
+      p = this.createCircle(p, 16);
       p.color = "blue";
       this._super(p);
       this.add("2d");
@@ -479,7 +560,7 @@ window.addEventListener('load',function(e) {
   
       Q.Sprite.extend('Target', {
         init: function(p) {
-            p = this.createTarget(p);
+            p = this.createTarget(p, 32);
             p.color = "black";
             this._super(p);
             this.on("drag");
@@ -527,7 +608,8 @@ window.addEventListener('load',function(e) {
        //p = this.createShape(p);
        p.x = spawnX;
        p.y = spawnY;
-       p.color = "yellow";
+       //p.color = "yellow";
+	   p.color = getRandomColor();
        // Initialize the p hash
        this._super(p);
 
