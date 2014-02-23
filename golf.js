@@ -28,10 +28,10 @@ function drawSquare(p)
 	p.points = [];
 
 	// my code;
-	p.points.push([0,0]);
-	p.points.push([64,0]);
-	p.points.push([64,64]);
-	p.points.push([0,64]);
+	p.points.push([-32,-32]);
+	p.points.push([32,-32]);
+	p.points.push([32,32]);
+	p.points.push([-32,32]);
 		  
 	p.w=64;
 	p.h=64;	
@@ -74,9 +74,9 @@ function drawAngle(p, orientation)
 	p.points = [];
 
 	// my code;
-	p.points.push([0,0]);
-	p.points.push([64,0]);
-	p.points.push([64,64]);
+	p.points.push([-32,-32]);
+	p.points.push([32,-32]);
+	p.points.push([32,32]);
 	//console.log(orientation + " SS");
 	switch (orientation)
 	{
