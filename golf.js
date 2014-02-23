@@ -9,7 +9,7 @@ window.addEventListener('load',function(e) {
 
   // Set up a standard Quintus instance with only the 
   // Sprites and Scene module (for the stage support) loaded.
-  var Q = window.Q = Quintus().include("Sprites, Scenes, Input, Touch, 2D");
+  var Q = window.Q = Quintus().include("Sprites, Scenes, Input, Touch, 2D, UI");
 
   var spawnX = 50;
   var spawnY = 50;
