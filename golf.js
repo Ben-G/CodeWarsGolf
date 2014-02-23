@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 /*
 	2014 EA Code Wars Hackathon
@@ -11,6 +12,8 @@
 	Quintus Javascript HTML5 Game Engine: http://html5quintus.com/
 */
 
+=======
+>>>>>>> 4677d5aeedf70efa3303c511680d7c8b88aab3b9
 //////////////////
 // KNOWN ISSUES //
 //////////////////
@@ -507,29 +510,29 @@ window.addEventListener('load',function(e) {
       newX = (touch.origX + touch.dx);
       newY = (touch.origY + touch.dy);
 
-      console.log(newX);
-      console.log(this.p.x);
+      // console.log(newX);
+      // console.log(this.p.x);
 
-        distanceX = this.p.x - newX;
+      distanceX = this.p.x - newX;
+      distanceY = this.p.y - newY;
+      
+      angleCircle = Math.atan2(newY - this.p.y, this.p.x - newX);
+      degrees = angleCircle * (180/Math.PI);
+      degrees = -1 *(degrees - 90);
 
-
-      if (newY > this.p.y) {
-        distanceY = newY - this.p.y;
-      } else {
-        distanceY = this.p.y - newY;
-      }
-
-      tan = Math.tan(distanceX / distanceY);
-      radians = tan * (180/Math.PI);
-
-      this.powerbar.p.angle = radians;
+      this.powerbar.p.angle = degrees;
 
       distance = Math.sqrt((distanceX * distanceX) + (distanceY * distanceY));
       this.powerbar.p.scale = (distance / 200);
+      console.log(degrees);
     },
 
      touchEnd: function(touch) {
-        this.p.vy = -100;
+        distanceX = this.p.x - newX;
+        distanceY = this.p.y - newY;
+
+        this.p.vy = distanceY;
+        this.p.vx = distanceX;
         this.speed = 100;
         currentStage.remove(this.powerbar);
      },
@@ -698,6 +701,7 @@ window.addEventListener('load',function(e) {
     while(shapesLeft-- > 0) {
       stage.insert(new Q.RandomShape({ shape:"circle", orientation:0 }));
     }
+    stage.insert(new Q.Target({x: 90, y: 90}));
   }));
   
         // To display a game over / game won popup box, 
