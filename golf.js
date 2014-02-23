@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 
 /*
 	2014 EA Code Wars Hackathon
@@ -12,8 +12,6 @@
 	Quintus Javascript HTML5 Game Engine: http://html5quintus.com/
 */
 
-=======
->>>>>>> 4677d5aeedf70efa3303c511680d7c8b88aab3b9
 //////////////////
 // KNOWN ISSUES //
 //////////////////
