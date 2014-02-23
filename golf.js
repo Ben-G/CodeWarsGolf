@@ -294,7 +294,6 @@ function drawRandomShape(p)
 	
 function advanceShape(p, shape, orientation)
 {
-//console.log(orientation);
 	var nextShape = shape;
 	switch (shape)
 	{
@@ -353,12 +352,6 @@ function advanceShape(p, shape, orientation)
 			break;			
 		}
 		break;		
-		
-		/*
-		case "random":
-		nextShape = "circle";
-		break;
-		*/
 	}
 	return nextShape;
 }
