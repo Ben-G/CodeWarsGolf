@@ -196,8 +196,6 @@ function drawCircleDeprecated(p, size)
         
      p.w=size;
      p.h=size; 
-     p.x = 200*Math.random()+p.w/2;
-     p.y = 200*Math.random()+p.h/2;
      p.cx = p.w/2;
      p.cy = p.h/2;
      p.angle = 1; // it breaks at 0?? why??
@@ -441,11 +439,15 @@ window.addEventListener('load',function(e) {
        // Create a random shape (defined below)
        p = p || {};
        p.label = "New shape";
-       p.fill = "#CCCCCC";
        p.type = -1;
        p.h = 64;
        p.color = "red";
        p.z = -1;
+
+       p.fill = "#990000";
+       p.border = 5;
+       p.shadow = 10;
+       p.shadowColor = "rgba(0,0,0,0.5)";
 
        // Initialize the p hash
        this._super(p);
@@ -747,7 +749,7 @@ window.addEventListener('load',function(e) {
       stage.insert(new Q.RandomShape({ shape:"circle", orientation:0 }));
     }
 	Q.load("target.png",function() {
-		stage.insert(new Q.Target({x: 90, y: 90}));
+		stage.insert(new Q.Target({x: 150, y: 150}));
     });
 
     scoreText = stage.insert(new Q.UI.Text({ 
@@ -759,7 +761,7 @@ window.addEventListener('load',function(e) {
 
     var playButton = stage.insert(new Q.UI.Button({
       label: "Play!",
-      y: 50,
+      y: 100,
       x: Q.width - 150,
       fill: "#990000",
       border: 5,
