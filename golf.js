@@ -1,4 +1,3 @@
-
 //////////////////
 // KNOWN ISSUES //
 //////////////////
@@ -616,6 +615,7 @@ window.addEventListener('load',function(e) {
     while(shapesLeft-- > 0) {
       stage.insert(new Q.RandomShape({ shape:"circle", orientation:0 }));
     }
+    stage.insert(new Q.Target({x: 90, y: 90}));
   }));
   
         // To display a game over / game won popup box, 
